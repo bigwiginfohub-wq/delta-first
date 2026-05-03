@@ -165,11 +165,12 @@ Authors
 
 ---
 
-Links
+## Links
 
-· Full Protocol Specification: Link soon
-· Report Issues: [GitHub Issues link]
-· Contact: bigwiginfohub@gmail.com
+- **Full Protocol Specification:** [protocol_specification.md](protocol_specification.md)
+- **Report Issues:** [GitHub Issues](https://github.com/bigwiginfohub-wq/delta-first/issues)
+
+· **Contact: bigwiginfohub@gmail.com**
 
 ---
 
