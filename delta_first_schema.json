@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DeltaFirst_v5.0.1_AuditOutput",
+  "type": "object",
+  "required": [
+    "auditor_id", "audit_id", "integrity_score", "protocol_mode",
+    "primary_driver", "reasoning_trace", "peak_moment", "interpretive_anchor",
+    "h3_warrant", "null_test", "label_impact", "friction_score_components",
+    "friction_score", "mcl_coefficient", "boundary"
+  ],
+  "properties": {
+    "auditor_id": {"type": "string"},
+    "audit_id": {"type": "string"},
+    "integrity_score": {"type": "number", "const": 84.0},
+    "protocol_mode": {"type": "string", "const": "Full Protocol Mode"},
+    "primary_driver": {"type": "string", "enum": ["H1", "H2", "H3"]},
+    "reasoning_trace": {"type": "string", "minLength": 15},
+    "peak_moment": {"type": "string"},
+    "interpretive_anchor": {"type": "string"},
+    "h3_warrant": {"type": "string", "minLength": 25},
+    "null_test": {"type": "string", "minLength": 15},
+    "label_impact": {"type": "string", "enum": ["Easier", "Harder", "Neutral"]},
+    "friction_score_components": {
+      "type": "object",
+      "required": ["base", "lens_divergence", "warrant_ambiguity", "validation_confidence"],
+      "properties": {
+        "base": {"type": "number", "const": 0.50},
+        "lens_divergence": {"type": "number", "minimum": 0.00, "maximum": 0.30},
+        "warrant_ambiguity": {"type": "number", "minimum": 0.00, "maximum": 0.20},
+        "validation_confidence": {"type": "number", "minimum": 0.00, "maximum": 0.10}
+      },
+      "additionalProperties": false
+    },
+    "friction_score": {"type": "number", "minimum": 0.00, "maximum": 1.00},
+    "mcl_coefficient": {"type": "number", "minimum": 0.00, "maximum": 1.00},
+    "boundary": {"type": "string", "const": "This analysis maps causal plausibility strictly within the locked window. It cannot verify internal deliberations, off-record communications, or post-window developments. Claims are time-locked."}
+  },
+  "additionalProperties": false
+}

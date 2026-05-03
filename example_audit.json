@@ -1,0 +1,22 @@
+{
+  "auditor_id": "example-auditor-001",
+  "audit_id": "example_audit_001",
+  "integrity_score": 84.0,
+  "protocol_mode": "Full Protocol Mode",
+  "primary_driver": "H3",
+  "reasoning_trace": "This is an example audit for testing the Delta-First validator. The locked window shows escalation but neither signed ceasefire (H1) nor diplomatic collapse (H2). Therefore H3 applies.",
+  "peak_moment": "December 19-21, 2023",
+  "interpretive_anchor": "Military signaling and commercial adjustment co-occur.",
+  "h3_warrant": "H1 absent (no ceasefire). H2 absent (no diplomatic collapse). H3 applies by elimination.",
+  "null_test": "No. H3 is necessary for coherence.",
+  "label_impact": "Harder",
+  "friction_score_components": {
+    "base": 0.50,
+    "lens_divergence": 0.14,
+    "warrant_ambiguity": 0.08,
+    "validation_confidence": 0.05
+  },
+  "friction_score": 0.67,
+  "mcl_coefficient": 0.67,
+  "boundary": "This analysis maps causal plausibility strictly within the locked window. It cannot verify internal deliberations, off-record communications, or post-window developments. Claims are time-locked."
+}
