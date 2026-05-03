@@ -20,3 +20,13 @@ python validator.py example_audit.json
 
 # Batch validate all audits in a folder
 python batch_validator.py --folder ./audits --output report.csv
+
+## Author
+The Bridge Architect
+
+## License
+- Code: MIT
+- Protocol Specification: CC BY 4.0
+
+##Contact
+bigwiginfohub@gmail.com
