@@ -217,7 +217,7 @@ You are free to use, adapt, and distribute this protocol with attribution.
 ## 11. Citation
 
 If you use Delta-First in your work, please cite:
-
+ [Your Name]. (2026). Delta-First: A Validated Protocol for Causal Auditing Under Ambiguity. Zenodo. https://doi.org/10.5281/zenodo.20009717
 ```bibtex
 @misc{deltafirst2026,
   title={Delta-First: A Validated Protocol for Causal Auditing Under Ambiguity},
