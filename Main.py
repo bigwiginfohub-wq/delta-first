@@ -13,8 +13,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mode 3 passphrase hash (DeltaFirst2026)
+# Mode 3 passphrase hash (DeltaMode3)
 CORRECT_HASH = 6c4be6fabdafd60bd766b15b572d67f26006e52723a58f521900cb47234aed7d
+
 class VerifyRequest(BaseModel):
     passphrase: str
 
