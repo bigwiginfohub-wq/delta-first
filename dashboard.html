@@ -1,3 +1,19 @@
+<div id="verificationGate" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+    <h2>🔐 Mode 3 Verification</h2>
+    <input type="password" id="mode3Pass" placeholder="Enter passphrase" style="padding: 10px; margin: 10px;">
+    <button onclick="checkPass()">Verify</button>
+    <div id="verifyMsg" style="margin-top: 10px;"></div>
+</div>
+
+<script>
+    function checkPass() {
+        if (document.getElementById('mode3Pass').value === 'DeltaMode3') {
+            document.getElementById('verificationGate').style.display = 'none';
+        } else {
+            document.getElementById('verifyMsg').innerHTML = 'Wrong passphrase';
+        }
+    }
+</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
