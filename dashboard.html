@@ -1,3 +1,16 @@
+<!-- Step 0: Passphrase Verification -->
+<div id="verificationStep" class="step">
+    <h3>🔐 Verification Required</h3>
+    <label>Enter Mode 3 Passphrase</label>
+    <input type="password" id="mode3Passphrase" placeholder=6c4be6fabdafd60bd766b15b572d67f26006e52723a58f521900cb47234aed7d>
+    <button onclick="verifyMode3()">Verify</button>
+    <div id="verifyResult" style="display:none; margin-top: 10px; padding: 10px; border-radius: 8px;"></div>
+</div>
+
+<!-- The rest of the audit steps (hidden until verification) -->
+<div id="auditSteps" style="display:none;">
+    <!-- existing audit steps here -->
+</div>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -569,3 +582,44 @@
 </script>
 </body>
 </html>
+async function verifyMode3() {
+    const passphrase = document.getElementById('mode3Passphrase').value;
+    const resultDiv = document.getElementById('verifyResult');
+    const API_BASE = "https://agent-alpha-api.onrender.com";
+    
+    if (!passphrase) {
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = '⚠️ Please enter your passphrase.';
+        resultDiv.style.background = '#ffe0e0';
+        return;
+    }
+    
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = '⏳ Verifying...';
+    resultDiv.style.background = '#e8f0fe';
+    
+    try {
+        const response = await fetch(`${API_BASE}/verify`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ passphrase: passphrase })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.status === 'VERIFIED') {
+            resultDiv.innerHTML = '✅ Verification successful. Loading audit dashboard...';
+            resultDiv.style.background = '#e0f5e0';
+            setTimeout(() => {
+                document.getElementById('verificationStep').style.display = 'none';
+                document.getElementById('auditSteps').style.display = 'block';
+            }, 1000);
+        } else {
+            resultDiv.innerHTML = '❌ Access denied. Wrong passphrase.';
+            resultDiv.style.background = '#ffe0e0';
+        }
+    } catch (error) {
+        resultDiv.innerHTML = '❌ Verification service unavailable. Please try again.';
+        resultDiv.style.background = '#ffe0e0';
+    }
+}
