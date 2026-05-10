@@ -1,16 +1,3 @@
-<!-- Step 0: Passphrase Verification -->
-<div id="verificationStep" class="step">
-    <h3>🔐 Verification Required</h3>
-    <label>Enter Mode 3 Passphrase</label>
-    <input type="password" id="mode3Passphrase" placeholder=6c4be6fabdafd60bd766b15b572d67f26006e52723a58f521900cb47234aed7d>
-    <button onclick="verifyMode3()">Verify</button>
-    <div id="verifyResult" style="display:none; margin-top: 10px; padding: 10px; border-radius: 8px;"></div>
-</div>
-
-<!-- The rest of the audit steps (hidden until verification) -->
-<div id="auditSteps" style="display:none;">
-    <!-- existing audit steps here -->
-</div>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,16 +33,64 @@
       background: var(--bg3);
       min-height: 100vh;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: center;
       padding: 2rem 1rem;
       color: var(--text);
     }
 
+    .container {
+      max-width: 900px;
+      width: 100%;
+    }
+
+    /* Verification Step Styles */
+    .verification-step {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 2px 24px rgba(0,0,0,0.07);
+    }
+    .verification-step h2 {
+      margin-bottom: 0.5rem;
+      color: var(--blue);
+    }
+    .verification-step p {
+      color: var(--text2);
+      margin-bottom: 1.5rem;
+    }
+    .verification-step input {
+      width: 100%;
+      max-width: 300px;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      margin-bottom: 1rem;
+    }
+    .verification-step button {
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .verification-step button:hover {
+      background: #0e4a7a;
+    }
+    .verify-result {
+      margin-top: 1rem;
+      padding: 10px;
+      border-radius: var(--radius);
+      display: none;
+    }
+
     .app {
       display: flex;
       width: 100%;
-      max-width: 900px;
       min-height: 640px;
       border: 0.5px solid var(--border);
       border-radius: var(--radius-lg);
@@ -105,7 +140,6 @@
     .api-dot.error { background: var(--red); }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-    /* Main */
     .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
     .topbar {
@@ -120,7 +154,6 @@
 
     .content { padding: 1.25rem 1.5rem; flex: 1; overflow-y: auto; }
 
-    /* Form elements */
     .flabel { font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: 5px; }
     .fhint { font-size: 12px; color: var(--text3); margin-bottom: 9px; line-height: 1.5; }
 
@@ -166,7 +199,6 @@
     .ai-ask:hover { background: var(--blue-light); }
     .ai-ask:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* Footer */
     .footer {
       padding: 0.9rem 1.5rem; border-top: 0.5px solid var(--border);
       display: flex; justify-content: space-between; align-items: center;
@@ -185,13 +217,11 @@
     .nbtn.danger:hover { background: #c83a39; }
     .nbtn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    /* Badges */
     .badge { display: inline-block; padding: 2px 8px; border-radius: var(--radius); font-size: 11px; font-weight: 500; }
     .b-strong { background: #EAF3DE; color: #27500A; }
     .b-medium { background: var(--amber-light); color: var(--amber-text); }
     .b-weak { background: var(--red-light); color: #791F1F; }
 
-    /* Report / validation */
     .result-card {
       border: 0.5px solid var(--border);
       border-radius: var(--radius-lg);
@@ -247,379 +277,390 @@
 </head>
 <body>
 
-<div class="app">
-  <div class="sidebar">
-    <div class="logo">
-      <div class="logo-title">Delta-First</div>
-      <div class="logo-version">Causal Audit Protocol v5.0.1</div>
+<div class="container">
+    <!-- Step 0: Mode 3 Passphrase Verification -->
+    <div id="verificationStep" class="verification-step">
+        <h2>🔐 Mode 3 Verification Required</h2>
+        <p>This is the Delta-First audit dashboard for Mode 3 (DeltaFirst-StrategOS).<br>Enter your passphrase to continue.</p>
+        <input type="password" id="mode3Passphrase" placeholder="Enter your Mode 3 passphrase">
+        <button onclick="verifyMode3()">Verify Access</button>
+        <div id="verifyResult" class="verify-result"></div>
     </div>
-    <div id="snav"></div>
-    <div class="api-status">
-      <div class="api-pill">
-        <div class="api-dot" id="api-dot"></div>
-        <span id="api-label">Checking API...</span>
-      </div>
-    </div>
-  </div>
 
-  <div class="main">
-    <div class="topbar">
-      <div>
-        <div class="topbar-title" id="stitle">Step 1 — lock the evidence</div>
-        <div class="topbar-sub" id="ssub">Define exactly what claim you are testing</div>
-      </div>
+    <!-- The audit dashboard (hidden until verification) -->
+    <div id="auditSteps" style="display:none;">
+        <div class="app">
+            <div class="sidebar">
+                <div class="logo">
+                    <div class="logo-title">Delta-First</div>
+                    <div class="logo-version">Causal Audit Protocol v5.0.1</div>
+                </div>
+                <div id="snav"></div>
+                <div class="api-status">
+                    <div class="api-pill">
+                        <div class="api-dot" id="api-dot"></div>
+                        <span id="api-label">Checking API...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main">
+                <div class="topbar">
+                    <div>
+                        <div class="topbar-title" id="stitle">Step 1 — lock the evidence</div>
+                        <div class="topbar-sub" id="ssub">Define exactly what claim you are testing</div>
+                    </div>
+                </div>
+                <div class="prog-bar"><div class="prog-fill" id="pfill" style="width:14%"></div></div>
+                <div class="content" id="scontent"></div>
+                <div class="footer">
+                    <button class="nbtn" id="bbtn" onclick="goBack()">Back</button>
+                    <span style="font-size:11px;color:var(--text3)" id="sctr">Step 1 of 6</span>
+                    <button class="nbtn primary" id="nbtn" onclick="goNext()">Next</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="prog-bar"><div class="prog-fill" id="pfill" style="width:14%"></div></div>
-    <div class="content" id="scontent"></div>
-    <div class="footer">
-      <button class="nbtn" id="bbtn" onclick="goBack()">Back</button>
-      <span style="font-size:11px;color:var(--text3)" id="sctr">Step 1 of 6</span>
-      <button class="nbtn primary" id="nbtn" onclick="goNext()">Next</button>
-    </div>
-  </div>
 </div>
 
 <script>
-  const API_URL = "https://delta-first-production.up.railway.app/validate";
-  const CLAUDE_URL = "https://api.anthropic.com/v1/messages";
+    const API_BASE = "https://agent-alpha-api.onrender.com";
+    const API_URL = "https://delta-first-production.up.railway.app/validate";
+    const CLAUDE_URL = "https://api.anthropic.com/v1/messages";
 
-  const steps = [
-    { label: "Lock the evidence",        sub: "Define exactly what claim you are testing" },
-    { label: "Score evidence quality",    sub: "Rate each piece of evidence" },
-    { label: "Declare your perspective",  sub: "State the lens you are using" },
-    { label: "Falsifiability condition",  sub: "What would prove you wrong?" },
-    { label: "Map the causal story",      sub: "Identify drivers and peak moments" },
-    { label: "State your limits",         sub: "List what you cannot know" },
-    { label: "Validate & report",         sub: "Submit to live Delta-First API" }
-  ];
-
-  const S = {
-    cur: 1,
-    claim: "", context: "",
-    evidence: [{ text: "", strength: "strong" }],
-    perspective: "", perspectiveDetail: "",
-    falsify: "",
-    mainDriver: "", peakMoment: "", secondary: "",
-    limits: "",
-    apiResult: null, apiError: null, submitting: false
-  };
-
-  async function checkAPI() {
-    try {
-      await fetch("https://delta-first-production.up.railway.app/");
-      document.getElementById("api-dot").className = "api-dot live";
-      document.getElementById("api-label").textContent = "API live";
-    } catch (e) {
-      document.getElementById("api-dot").className = "api-dot error";
-      document.getElementById("api-label").textContent = "API unreachable";
+    // Mode 3 Verification Function
+    async function verifyMode3() {
+        const passphrase = document.getElementById('mode3Passphrase').value;
+        const resultDiv = document.getElementById('verifyResult');
+        
+        if (!passphrase) {
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '⚠️ Please enter your passphrase.';
+            resultDiv.style.background = '#ffe0e0';
+            return;
+        }
+        
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = '⏳ Verifying...';
+        resultDiv.style.background = '#e8f0fe';
+        
+        try {
+            const response = await fetch(`${API_BASE}/verify`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ passphrase: passphrase })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.status === 'VERIFIED') {
+                resultDiv.innerHTML = '✅ Verification successful. Loading audit dashboard...';
+                resultDiv.style.background = '#e0f5e0';
+                setTimeout(() => {
+                    document.getElementById('verificationStep').style.display = 'none';
+                    document.getElementById('auditSteps').style.display = 'block';
+                }, 1000);
+            } else {
+                resultDiv.innerHTML = '❌ Access denied. Wrong passphrase.';
+                resultDiv.style.background = '#ffe0e0';
+            }
+        } catch (error) {
+            resultDiv.innerHTML = '❌ Verification service unavailable. Please try again.';
+            resultDiv.style.background = '#ffe0e0';
+        }
     }
-  }
 
-  function renderNav() {
-    document.getElementById("snav").innerHTML = steps.map((s, i) => {
-      const n = i + 1, done = S.cur > n, active = S.cur === n;
-      return `<div class="step-item ${active ? "active" : ""} ${done ? "done" : ""}" onclick="jump(${n})">
-        <div class="snum">${done ? "✓" : n}</div>
-        <div style="font-size:13px;line-height:1.3">${s.label}</div>
-      </div>`;
-    }).join("");
-  }
+    const steps = [
+        { label: "Lock the evidence",        sub: "Define exactly what claim you are testing" },
+        { label: "Score evidence quality",    sub: "Rate each piece of evidence" },
+        { label: "Declare your perspective",  sub: "State the lens you are using" },
+        { label: "Falsifiability condition",  sub: "What would prove you wrong?" },
+        { label: "Map the causal story",      sub: "Identify drivers and peak moments" },
+        { label: "State your limits",         sub: "List what you cannot know" },
+        { label: "Validate & report",         sub: "Submit to live Delta-First API" }
+    ];
 
-  function jump(n) { S.cur = n; render(); }
-  function goBack() { if (S.cur > 1) { S.cur--; render(); } }
-  function goNext() { if (S.cur < 7) { S.cur++; render(); } }
-
-  async function askAI(prompt, boxId, btnId) {
-    const box = document.getElementById(boxId);
-    const btn = document.getElementById(btnId);
-    if (!box || !btn) return;
-    btn.disabled = true;
-    box.innerHTML = '<span class="loading-spin"></span>Thinking...';
-    try {
-      const res = await fetch(CLAUDE_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 300,
-          system: "You are a concise assistant for the Delta-First causal audit protocol. Give practical 2-3 sentence guidance. No markdown formatting.",
-          messages: [{ role: "user", content: prompt }]
-        })
-      });
-      const data = await res.json();
-      box.innerHTML = data.content?.find(b => b.type === "text")?.text || "No response.";
-      btn.textContent = "Ask again ↗";
-      btn.disabled = false;
-    } catch (e) {
-      box.innerHTML = "AI assistant unavailable. Please try again.";
-      btn.disabled = false;
-    }
-  }
-
-  async function submitToAPI() {
-    S.submitting = true; S.apiResult = null; S.apiError = null;
-    renderStep7();
-    const strong = S.evidence.filter(e => e.strength === "strong").length;
-    const medium = S.evidence.filter(e => e.strength === "medium").length;
-    const weak   = S.evidence.filter(e => e.strength === "weak").length;
-    const total  = S.evidence.length || 1;
-    const mcl      = parseFloat(((strong * 1.0 + medium * 0.5 + weak * 0.1) / total).toFixed(2));
-    const friction = parseFloat(Math.min(1, Math.max(0, 0.5 + (weak * 0.1 - strong * 0.05))).toFixed(2));
-    const payload = {
-      auditor_id: "dashboard-user-001",
-      audit_id: "audit_" + Date.now(),
-      integrity_score: 84.0,
-      protocol_mode: "Full Protocol Mode",
-      primary_driver: S.falsify ? "H3" : "H1",
-      reasoning_trace: S.claim || "No claim provided.",
-      peak_moment: S.peakMoment || "Not specified.",
-      interpretive_anchor: S.perspectiveDetail || S.perspective || "General.",
-      h3_warrant: S.falsify || "Not specified.",
-      null_test: "No.",
-      label_impact: "Harder",
-      friction_score_components: { base: 0.50, lens_divergence: 0.14, warrant_ambiguity: 0.08, validation_confidence: 0.05 },
-      friction_score: friction,
-      mcl_coefficient: mcl,
-      boundary: S.limits || "No boundary stated."
+    const S = {
+        cur: 1,
+        claim: "", context: "",
+        evidence: [{ text: "", strength: "strong" }],
+        perspective: "", perspectiveDetail: "",
+        falsify: "",
+        mainDriver: "", peakMoment: "", secondary: "",
+        limits: "",
+        apiResult: null, apiError: null, submitting: false
     };
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      S.apiResult = await res.json();
-    } catch (e) {
-      S.apiError = "Could not reach the Delta-First API. Please check your connection and try again.";
-    }
-    S.submitting = false;
-    renderStep7();
-  }
 
-  function renderStep7() {
-    const c = document.getElementById("scontent");
-
-    if (S.submitting) {
-      c.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:240px;gap:14px">
-        <div class="loading-spin" style="width:28px;height:28px;border-width:3px"></div>
-        <div style="font-size:14px;color:var(--text2)">Submitting to Delta-First API...</div>
-        <div style="font-size:12px;color:var(--text3)">delta-first-production.up.railway.app</div>
-      </div>`;
-      return;
+    async function checkAPI() {
+        try {
+            await fetch("https://delta-first-production.up.railway.app/");
+            document.getElementById("api-dot").className = "api-dot live";
+            document.getElementById("api-label").textContent = "API live";
+        } catch (e) {
+            document.getElementById("api-dot").className = "api-dot error";
+            document.getElementById("api-label").textContent = "API unreachable";
+        }
     }
 
-    if (S.apiError) {
-      c.innerHTML = `<div class="err-box">${S.apiError}</div>
-        <button class="nbtn primary" style="margin-top:12px" onclick="submitToAPI()">Retry ↗</button>`;
-      return;
+    function renderNav() {
+        document.getElementById("snav").innerHTML = steps.map((s, i) => {
+            const n = i + 1, done = S.cur > n, active = S.cur === n;
+            return `<div class="step-item ${active ? "active" : ""} ${done ? "done" : ""}" onclick="jump(${n})">
+                <div class="snum">${done ? "✓" : n}</div>
+                <div style="font-size:13px;line-height:1.3">${s.label}</div>
+            </div>`;
+        }).join("");
     }
 
-    if (S.apiResult) {
-      const r = S.apiResult;
-      const pass = r.valid;
-      c.innerHTML = `
-        <div class="valid-banner ${pass ? "pass" : "fail"}">${pass ? "✓ Validation passed — your audit meets Delta-First protocol standards" : "✗ Validation failed — review errors below"}</div>
-        <div class="metric-grid">
-          <div class="metric"><div class="metric-val">${(r.friction_score || 0).toFixed(2)}</div><div class="metric-lbl">friction score</div></div>
-          <div class="metric"><div class="metric-val">${(r.mcl_coefficient || 0).toFixed(2)}</div><div class="metric-lbl">MCL coefficient</div></div>
-          <div class="metric"><div class="metric-val">${r.primary_driver || "—"}</div><div class="metric-lbl">primary driver</div></div>
-        </div>
-        <div class="result-card"><h3>Claim</h3><div class="result-val">${S.claim || "—"}</div></div>
-        <div class="result-card"><h3>Causal map</h3>
-          <div class="causal-map">
-            <div class="cnode driver"><div class="cnode-label">main driver</div>${S.mainDriver || "—"}</div>
-            <div class="carr">→</div>
-            <div class="cnode peak"><div class="cnode-label">peak moment</div>${S.peakMoment || "—"}</div>
-            <div class="carr">→</div>
-            <div class="cnode"><div class="cnode-label">secondary</div>${S.secondary || "—"}</div>
-          </div>
-        </div>
-        <div class="result-card"><h3>Falsifiability condition</h3><div class="result-val">${S.falsify || "—"}</div></div>
-        <div class="result-card"><h3>Known limits</h3><div class="result-val">${S.limits || "—"}</div></div>
-        <div class="meta-text">Audit ID: ${r.audit_id} · Validated: ${r.validated_at?.split("T")[0] || "—"}</div>
-        <div class="btn-row">
-          <button class="nbtn" onclick="S.cur=1;S.apiResult=null;S.apiError=null;render()">Start new audit</button>
-          <button class="nbtn primary" onclick="window.print()">Print report</button>
-        </div>`;
-      return;
+    function jump(n) { S.cur = n; render(); }
+    function goBack() { if (S.cur > 1) { S.cur--; render(); } }
+    function goNext() { if (S.cur < 7) { S.cur++; render(); } }
+
+    async function askAI(prompt, boxId, btnId) {
+        const box = document.getElementById(boxId);
+        const btn = document.getElementById(btnId);
+        if (!box || !btn) return;
+        btn.disabled = true;
+        box.innerHTML = '<span class="loading-spin"></span>Thinking...';
+        try {
+            const res = await fetch(CLAUDE_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    model: "claude-sonnet-4-20250514",
+                    max_tokens: 300,
+                    system: "You are a concise assistant for the Delta-First causal audit protocol. Give practical 2-3 sentence guidance. No markdown formatting.",
+                    messages: [{ role: "user", content: prompt }]
+                })
+            });
+            const data = await res.json();
+            box.innerHTML = data.content?.find(b => b.type === "text")?.text || "No response.";
+            btn.textContent = "Ask again ↗";
+            btn.disabled = false;
+        } catch (e) {
+            box.innerHTML = "AI assistant unavailable. Please try again.";
+            btn.disabled = false;
+        }
     }
 
-    const strong = S.evidence.filter(e => e.strength === "strong").length;
-    const medium = S.evidence.filter(e => e.strength === "medium").length;
-    const weak   = S.evidence.filter(e => e.strength === "weak").length;
-    c.innerHTML = `
-      <div class="result-card"><h3>Ready to validate</h3>
-        <div class="result-val" style="margin-bottom:10px">${S.claim || "<em>No claim entered yet.</em>"}</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
-          <span class="badge b-strong">${strong} strong</span>
-          <span class="badge b-medium">${medium} medium</span>
-          <span class="badge b-weak">${weak} weak</span>
-        </div>
-        <div style="font-size:12px;color:var(--text3)">Perspective: ${S.perspective || "not declared"} · Driver: ${S.mainDriver || "not set"}</div>
-      </div>
-      <div class="ai-box">
-        <div class="ai-hdr"><div class="ai-dot-sm"></div>Submit to live API</div>
-        <div class="ai-content" style="font-size:12px">This will send your audit to <strong>delta-first-production.up.railway.app/validate</strong> and return a real validation result with friction score, MCL coefficient, and pass/fail status.</div>
-        <button class="nbtn danger" style="margin-top:10px" onclick="submitToAPI()">Submit to API ↗</button>
-      </div>`;
-  }
-
-  const renderers = [
-    () => `
-      <div class="flabel">What claim are you testing?</div>
-      <div class="fhint">Write the exact cause-and-effect statement you want to verify. Be specific.</div>
-      <textarea placeholder="e.g. Did the AI model actually find zero-day vulnerabilities, or is this a marketing claim?" onchange="S.claim=this.value">${S.claim}</textarea>
-      <hr class="divider">
-      <div class="flabel">Background context</div>
-      <div class="fhint">Briefly describe what is happening and why this claim matters.</div>
-      <textarea placeholder="Add any relevant context about the situation..." onchange="S.context=this.value">${S.context}</textarea>
-      <div class="ai-box">
-        <div class="ai-hdr"><div class="ai-dot-sm"></div>AI assistant</div>
-        <div class="ai-content" id="aib1">Click below to get help framing your claim clearly and precisely.</div>
-        <button class="ai-ask" id="aibtn1" onclick="askAI('Help me frame a precise testable causal claim for Delta-First analysis. The user wrote: &quot;'+S.claim+'&quot;. Suggest a sharper, more specific version.','aib1','aibtn1')">Get AI guidance ↗</button>
-      </div>`,
-
-    () => {
-      const rows = S.evidence.map((ev, i) => `
-        <div class="ev-row">
-          <textarea placeholder="Describe this piece of evidence..." onchange="S.evidence[${i}].text=this.value">${ev.text}</textarea>
-          <select onchange="S.evidence[${i}].strength=this.value">
-            <option value="strong" ${ev.strength === "strong" ? "selected" : ""}>Strong</option>
-            <option value="medium" ${ev.strength === "medium" ? "selected" : ""}>Medium</option>
-            <option value="weak"   ${ev.strength === "weak"   ? "selected" : ""}>Weak</option>
-          </select>
-        </div>`).join("");
-      return `
-        <div class="flabel">Evidence pieces</div>
-        <div class="fhint">Strong = verified data · Medium = credible but unverified · Weak = rumor or anecdote</div>
-        ${rows}
-        <button class="add-btn" onclick="S.evidence.push({text:'',strength:'strong'});render()">+ Add evidence</button>
-        <div class="ai-box">
-          <div class="ai-hdr"><div class="ai-dot-sm"></div>AI assistant</div>
-          <div class="ai-content" id="aib2">Click below for help evaluating your evidence quality.</div>
-          <button class="ai-ask" id="aibtn2" onclick="askAI('For a Delta-First audit on: &quot;'+S.claim+'&quot; — what types of evidence should I look for, and how do I distinguish strong from weak evidence?','aib2','aibtn2')">Get AI guidance ↗</button>
-        </div>`;
-    },
-
-    () => `
-      <div class="flabel">What lens are you using?</div>
-      <div class="fhint">Declaring your perspective prevents hidden bias. Pick the one that best describes your angle.</div>
-      <select onchange="S.perspective=this.value">
-        <option value="" disabled ${!S.perspective ? "selected" : ""}>Select a perspective...</option>
-        ${["Market / Business","Security / Risk","Public Health","Policy / Regulatory","Journalism / Fact-checking","Academic Research","AI Safety","Investing","Other"].map(p => `<option value="${p}" ${S.perspective === p ? "selected" : ""}>${p}</option>`).join("")}
-      </select>
-      <hr class="divider">
-      <div class="flabel">How might this perspective bias your analysis?</div>
-      <div class="fhint">Acknowledge what you might over-emphasize or overlook because of your lens.</div>
-      <textarea placeholder="e.g. As a security researcher, I may over-weight vulnerability evidence..." onchange="S.perspectiveDetail=this.value">${S.perspectiveDetail}</textarea>
-      <div class="ai-box">
-        <div class="ai-hdr"><div class="ai-dot-sm"></div>AI assistant</div>
-        <div class="ai-content" id="aib3">Click to explore how your perspective might shape this analysis.</div>
-        <button class="ai-ask" id="aibtn3" onclick="askAI('I am analyzing &quot;'+S.claim+'&quot; from a &quot;'+(S.perspective||'general')+'&quot; perspective. What biases should I watch out for and what might I be blind to?','aib3','aibtn3')">Get AI guidance ↗</button>
-      </div>`,
-
-    () => `
-      <div class="flabel">What would prove you wrong?</div>
-      <div class="fhint">Like a scientist — state the specific evidence that would make you change your conclusion.</div>
-      <textarea placeholder="e.g. If independent security researchers cannot replicate the vulnerability findings in a controlled environment, the claim is false..." onchange="S.falsify=this.value" style="min-height:110px">${S.falsify}</textarea>
-      <div class="ai-box">
-        <div class="ai-hdr"><div class="ai-dot-sm"></div>AI assistant</div>
-        <div class="ai-content" id="aib4">Click for help designing a strong falsifiability condition.</div>
-        <button class="ai-ask" id="aibtn4" onclick="askAI('For the claim &quot;'+S.claim+'&quot;, help me write a specific testable falsifiability condition. What evidence should make me change my conclusion?','aib4','aibtn4')">Get AI guidance ↗</button>
-      </div>`,
-
-    () => `
-      <div class="flabel">Main driver</div>
-      <div class="fhint">What is the single most important cause of the outcome you are analyzing?</div>
-      <textarea placeholder="The primary cause is..." onchange="S.mainDriver=this.value" style="min-height:65px">${S.mainDriver}</textarea>
-      <hr class="divider">
-      <div class="flabel">Peak moment</div>
-      <div class="fhint">When did the causal chain reach its decisive turning point?</div>
-      <textarea placeholder="The critical moment was when..." onchange="S.peakMoment=this.value" style="min-height:65px">${S.peakMoment}</textarea>
-      <hr class="divider">
-      <div class="flabel">Secondary factors</div>
-      <div class="fhint">What other factors contributed but were not the main driver?</div>
-      <textarea placeholder="Contributing factors include..." onchange="S.secondary=this.value" style="min-height:65px">${S.secondary}</textarea>
-      <div class="ai-box">
-        <div class="ai-hdr"><div class="ai-dot-sm"></div>AI assistant</div>
-        <div class="ai-content" id="aib5">Click for help mapping the causal story.</div>
-        <button class="ai-ask" id="aibtn5" onclick="askAI('For the claim &quot;'+S.claim+'&quot;, help me identify the main driver, peak moment, and secondary factors.','aib5','aibtn5')">Get AI guidance ↗</button>
-      </div>`,
-
-    () => `
-      <div class="flabel">What can you not know?</div>
-      <div class="fhint">Explicitly list the limits of your analysis — missing data, outside your expertise, unverifiable claims.</div>
-      <textarea placeholder="I cannot verify... / I do not have access to... / My analysis does not cover..." onchange="S.limits=this.value" style="min-height:130px">${S.limits}</textarea>
-      <div class="ai-box">
-        <div class="ai-hdr"><div class="ai-dot-sm"></div>AI assistant</div>
-        <div class="ai-content" id="aib6">Click to identify blind spots in your analysis.</div>
-        <button class="ai-ask" id="aibtn6" onclick="askAI('I analyzed &quot;'+S.claim+'&quot; from a &quot;'+(S.perspective||'general')+'&quot; perspective. What blind spots or data limits should I explicitly acknowledge?','aib6','aibtn6')">Get AI guidance ↗</button>
-      </div>`
-  ];
-
-  function render() {
-    const s = steps[S.cur - 1];
-    document.getElementById("stitle").textContent = S.cur === 7 ? "Step 7 — validate & report" : `Step ${S.cur} — ${s.label}`;
-    document.getElementById("ssub").textContent = s.sub;
-    document.getElementById("pfill").style.width = (S.cur / 7 * 100) + "%";
-    document.getElementById("sctr").textContent = S.cur === 7 ? "Final step" : `Step ${S.cur} of 6`;
-    document.getElementById("bbtn").disabled = S.cur === 1;
-    const nb = document.getElementById("nbtn");
-    if (S.cur === 7) {
-      nb.textContent = "Start over";
-      nb.onclick = () => { S.cur = 1; S.apiResult = null; S.apiError = null; render(); };
-    } else {
-      nb.textContent = S.cur === 6 ? "Go to validation" : "Next";
-      nb.onclick = goNext;
+    async function submitToAPI() {
+        S.submitting = true; S.apiResult = null; S.apiError = null;
+        renderStep7();
+        const strong = S.evidence.filter(e => e.strength === "strong").length;
+        const medium = S.evidence.filter(e => e.strength === "medium").length;
+        const weak   = S.evidence.filter(e => e.strength === "weak").length;
+        const total  = S.evidence.length || 1;
+        const mcl      = parseFloat(((strong * 1.0 + medium * 0.5 + weak * 0.1) / total).toFixed(2));
+        const friction = parseFloat(Math.min(1, Math.max(0, 0.5 + (weak * 0.1 - strong * 0.05))).toFixed(2));
+        const payload = {
+            auditor_id: "dashboard-user-001",
+            audit_id: "audit_" + Date.now(),
+            integrity_score: 84.0,
+            protocol_mode: "Full Protocol Mode",
+            primary_driver: S.falsify ? "H3" : "H1",
+            reasoning_trace: S.claim || "No claim provided.",
+            peak_moment: S.peakMoment || "Not specified.",
+            interpretive_anchor: S.perspectiveDetail || S.perspective || "General.",
+            h3_warrant: S.falsify || "Not specified.",
+            null_test: "No.",
+            label_impact: "Harder",
+            friction_score_components: { base: 0.50, lens_divergence: 0.14, warrant_ambiguity: 0.08, validation_confidence: 0.05 },
+            friction_score: friction,
+            mcl_coefficient: mcl,
+            boundary: S.limits || "No boundary stated."
+        };
+        try {
+            const res = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            S.apiResult = await res.json();
+        } catch (e) {
+            S.apiError = "Could not reach the Delta-First API. Please check your connection and try again.";
+        }
+        S.submitting = false;
+        renderStep7();
     }
-    if (S.cur === 7) renderStep7();
-    else document.getElementById("scontent").innerHTML = renderers[S.cur - 1]();
-    renderNav();
-  }
 
-  checkAPI();
-  render();
+    function renderStep7() {
+        const c = document.getElementById("scontent");
+
+        if (S.submitting) {
+            c.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:240px;gap:14px">
+                <div class="loading-spin" style="width:28px;height:28px;border-width:3px"></div>
+                <div style="font-size:14px;color:var(--text2)">Submitting to Delta-First API...</div>
+                <div style="font-size:12px;color:var(--text3)">delta-first-production.up.railway.app</div>
+            </div>`;
+            return;
+        }
+
+        if (S.apiError) {
+            c.innerHTML = `<div class="err-box">${S.apiError}</div>
+                <button class="nbtn primary" style="margin-top:12px" onclick="submitToAPI()">Retry ↗</button>`;
+            return;
+        }
+
+        if (S.apiResult) {
+            const r = S.apiResult;
+            const pass = r.valid;
+            c.innerHTML = `
+                <div class="valid-banner ${pass ? "pass" : "fail"}">${pass ? "✓ Validation passed — your audit meets Delta-First protocol standards" : "✗ Validation failed — review errors below"}</div>
+                <div class="metric-grid">
+                    <div class="metric"><div class="metric-val">${(r.friction_score || 0).toFixed(2)}</div><div class="metric-lbl">friction score</div></div>
+                    <div class="metric"><div class="metric-val">${(r.mcl_coefficient || 0).toFixed(2)}</div><div class="metric-lbl">MCL coefficient</div></div>
+                    <div class="metric"><div class="metric-val">${r.primary_driver || "—"}</div><div class="metric-lbl">primary driver</div></div>
+                </div>
+                <div class="result-card"><h3>Claim</h3><div class="result-val">${S.claim || "—"}</div></div>
+                <div class="result-card"><h3>Causal map</h3>
+                    <div class="causal-map">
+                        <div class="cnode driver"><div class="cnode-label">main driver</div>${S.mainDriver || "—"}</div>
+                        <div class="carr">→</div>
+                        <div class="cnode peak"><div class="cnode-label">peak moment</div>${S.peakMoment || "—"}</div>
+                        <div class="carr">→</div>
+                        <div class="cnode"><div class="cnode-label">secondary</div>${S.secondary || "—"}</div>
+                    </div>
+                </div>
+                <div class="result-card"><h3>Falsifiability condition</h3><div class="result-val">${S.falsify || "—"}</div></div>
+                <div class="result-card"><h3>Known limits</h3><div class="result-val">${S.limits || "—"}</div></div>
+                <div class="meta-text">Audit ID: ${r.audit_id} · Validated: ${r.validated_at?.split("T")[0] || "—"}</div>
+                <div class="btn-row">
+                    <button class="nbtn" onclick="S.cur=1;S.apiResult=null;S.apiError=null;render()">Start new audit</button>
+                    <button class="nbtn primary" onclick="window.print()">Print report</button>
+                </div>`;
+            return;
+        }
+
+        const strong = S.evidence.filter(e => e.strength === "strong").length;
+        const medium = S.evidence.filter(e => e.strength === "medium").length;
+        const weak   = S.evidence.filter(e => e.strength === "weak").length;
+        c.innerHTML = `
+            <div class="result-card"><h3>Ready to validate</h3>
+                <div class="result-val" style="margin-bottom:10px">${S.claim || "<em>No claim entered yet.</em>"}</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+                    <span class="badge b-strong">${strong} strong</span>
+                    <span class="badge b-medium">${medium} medium</span>
+                    <span class="badge b-weak">${weak} weak</span>
+                </div>
+                <div style="font-size:12px;color:var(--text3)">Perspective: ${S.perspective || "not declared"} · Driver: ${S.mainDriver || "not set"}</div>
+            </div>
+            <div class="ai-box">
+                <div class="ai-hdr"><div class="ai-dot-sm"></div>Submit to live API</div>
+                <div class="ai-content" style="font-size:12px">This will send your audit to <strong>delta-first-production.up.railway.app/validate</strong> and return a real validation result.</div>
+                <button class="nbtn danger" style="margin-top:10px" onclick="submitToAPI()">Submit to API ↗</button>
+            </div>`;
+    }
+
+    const renderers = [
+        () => `
+            <div class="flabel">What claim are you testing?</div>
+            <div class="fhint">Write the exact cause-and-effect statement you want to verify. Be specific.</div>
+            <textarea placeholder="e.g. Did the AI model actually find zero-day vulnerabilities, or is this a marketing claim?" onchange="S.claim=this.value">${S.claim}</textarea>
+            <hr class="divider">
+            <div class="flabel">Background context</div>
+            <div class="fhint">Briefly describe what is happening and why this claim matters.</div>
+            <textarea placeholder="Add any relevant context about the situation..." onchange="S.context=this.value">${S.context}</textarea>
+            <div class="ai-box">
+                <div class="ai-hdr"><div class="ai-dot-sm"></div>AI assistant</div>
+                <div class="ai-content" id="aib1">Click below to get help framing your claim clearly and precisely.</div>
+                <button class="ai-ask" id="aibtn1" onclick="askAI('Help me frame a precise testable causal claim for Delta-First analysis. The user wrote: &quot;'+S.claim+'&quot;. Suggest a sharper, more specific version.','aib1','aibtn1')">Get AI guidance ↗</button>
+            </div>`,
+        () => {
+            const rows = S.evidence.map((ev, i) => `
+                <div class="ev-row">
+                    <textarea placeholder="Describe this piece of evidence..." onchange="S.evidence[${i}].text=this.value">${ev.text}</textarea>
+                    <select onchange="S.evidence[${i}].strength=this.value">
+                        <option value="strong" ${ev.strength === "strong" ? "selected" : ""}>Strong</option>
+                        <option value="medium" ${ev.strength === "medium" ? "selected" : ""}>Medium</option>
+                        <option value="weak"   ${ev.strength === "weak"   ? "selected" : ""}>Weak</option>
+                    </select>
+                </div>`).join("");
+            return `
+                <div class="flabel">Evidence pieces</div>
+                <div class="fhint">Strong = verified data · Medium = credible but unverified · Weak = rumor or anecdote</div>
+                ${rows}
+                <button class="add-btn" onclick="S.evidence.push({text:'',strength:'strong'});render()">+ Add evidence</button>
+                <div class="ai-box">
+                    <div class="ai-hdr"><div class="ai-dot-sm"></div>AI assistant</div>
+                    <div class="ai-content" id="aib2">Click below for help evaluating your evidence quality.</div>
+                    <button class="ai-ask" id="aibtn2" onclick="askAI('For a Delta-First audit on: &quot;'+S.claim+'&quot; — what types of evidence should I look for, and how do I distinguish strong from weak evidence?','aib2','aibtn2')">Get AI guidance ↗</button>
+                </div>`;
+        },
+        () => `
+            <div class="flabel">What lens are you using?</div>
+            <div class="fhint">Declaring your perspective prevents hidden bias. Pick the one that best describes your angle.</div>
+            <select onchange="S.perspective=this.value">
+                <option value="" disabled ${!S.perspective ? "selected" : ""}>Select a perspective...</option>
+                ${["Market / Business","Security / Risk","Public Health","Policy / Regulatory","Journalism / Fact-checking","Academic Research","AI Safety","Investing","Other"].map(p => `<option value="${p}" ${S.perspective === p ? "selected" : ""}>${p}</option>`).join("")}
+            </select>
+            <hr class="divider">
+            <div class="flabel">How might this perspective bias your analysis?</div>
+            <div class="fhint">Acknowledge what you might over-emphasize or overlook because of your lens.</div>
+            <textarea placeholder="e.g. As a security researcher, I may over-weight vulnerability evidence..." onchange="S.perspectiveDetail=this.value">${S.perspectiveDetail}</textarea>
+            <div class="ai-box">
+                <div class="ai-hdr"><div class="ai-dot-sm"></div>AI assistant</div>
+                <div class="ai-content" id="aib3">Click to explore how your perspective might shape this analysis.</div>
+                <button class="ai-ask" id="aibtn3" onclick="askAI('I am analyzing &quot;'+S.claim+'&quot; from a &quot;'+(S.perspective||'general')+'&quot; perspective. What biases should I watch out for and what might I be blind to?','aib3','aibtn3')">Get AI guidance ↗</button>
+            </div>`,
+        () => `
+            <div class="flabel">What would prove you wrong?</div>
+            <div class="fhint">Like a scientist — state the specific evidence that would make you change your conclusion.</div>
+            <textarea placeholder="e.g. If independent security researchers cannot replicate the vulnerability findings in a controlled environment, the claim is false..." onchange="S.falsify=this.value" style="min-height:110px">${S.falsify}</textarea>
+            <div class="ai-box">
+                <div class="ai-hdr"><div class="ai-dot-sm"></div>AI assistant</div>
+                <div class="ai-content" id="aib4">Click for help designing a strong falsifiability condition.</div>
+                <button class="ai-ask" id="aibtn4" onclick="askAI('For the claim &quot;'+S.claim+'&quot;, help me write a specific testable falsifiability condition. What evidence should make me change my conclusion?','aib4','aibtn4')">Get AI guidance ↗</button>
+            </div>`,
+        () => `
+            <div class="flabel">Main driver</div>
+            <div class="fhint">What is the single most important cause of the outcome you are analyzing?</div>
+            <textarea placeholder="The primary cause is..." onchange="S.mainDriver=this.value" style="min-height:65px">${S.mainDriver}</textarea>
+            <hr class="divider">
+            <div class="flabel">Peak moment</div>
+            <div class="fhint">When did the causal chain reach its decisive turning point?</div>
+            <textarea placeholder="The critical moment was when..." onchange="S.peakMoment=this.value" style="min-height:65px">${S.peakMoment}</textarea>
+            <hr class="divider">
+            <div class="flabel">Secondary factors</div>
+            <div class="fhint">What other factors contributed but were not the main driver?</div>
+            <textarea placeholder="Contributing factors include..." onchange="S.secondary=this.value" style="min-height:65px">${S.secondary}</textarea>
+            <div class="ai-box">
+                <div class="ai-hdr"><div class="ai-dot-sm"></div>AI assistant</div>
+                <div class="ai-content" id="aib5">Click for help mapping the causal story.</div>
+                <button class="ai-ask" id="aibtn5" onclick="askAI('For the claim &quot;'+S.claim+'&quot;, help me identify the main driver, peak moment, and secondary factors.','aib5','aibtn5')">Get AI guidance ↗</button>
+            </div>`,
+        () => `
+            <div class="flabel">What can you not know?</div>
+            <div class="fhint">Explicitly list the limits of your analysis — missing data, outside your expertise, unverifiable claims.</div>
+            <textarea placeholder="I cannot verify... / I do not have access to... / My analysis does not cover..." onchange="S.limits=this.value" style="min-height:130px">${S.limits}</textarea>
+            <div class="ai-box">
+                <div class="ai-hdr"><div class="ai-dot-sm"></div>AI assistant</div>
+                <div class="ai-content" id="aib6">Click to identify blind spots in your analysis.</div>
+                <button class="ai-ask" id="aibtn6" onclick="askAI('I analyzed &quot;'+S.claim+'&quot; from a &quot;'+(S.perspective||'general')+'&quot; perspective. What blind spots or data limits should I explicitly acknowledge?','aib6','aibtn6')">Get AI guidance ↗</button>
+            </div>`
+    ];
+
+    function render() {
+        const s = steps[S.cur - 1];
+        document.getElementById("stitle").textContent = S.cur === 7 ? "Step 7 — validate & report" : `Step ${S.cur} — ${s.label}`;
+        document.getElementById("ssub").textContent = s.sub;
+        document.getElementById("pfill").style.width = (S.cur / 7 * 100) + "%";
+        document.getElementById("sctr").textContent = S.cur === 7 ? "Final step" : `Step ${S.cur} of 6`;
+        document.getElementById("bbtn").disabled = S.cur === 1;
+        const nb = document.getElementById("nbtn");
+        if (S.cur === 7) {
+            nb.textContent = "Start over";
+            nb.onclick = () => { S.cur = 1; S.apiResult = null; S.apiError = null; render(); };
+        } else {
+            nb.textContent = S.cur === 6 ? "Go to validation" : "Next";
+            nb.onclick = goNext;
+        }
+        if (S.cur === 7) renderStep7();
+        else document.getElementById("scontent").innerHTML = renderers[S.cur - 1]();
+        renderNav();
+    }
+
+    checkAPI();
+    render();
 </script>
 </body>
 </html>
-async function verifyMode3() {
-    const passphrase = document.getElementById('mode3Passphrase').value;
-    const resultDiv = document.getElementById('verifyResult');
-    const API_BASE = "https://agent-alpha-api.onrender.com";
-    
-    if (!passphrase) {
-        resultDiv.style.display = 'block';
-        resultDiv.innerHTML = '⚠️ Please enter your passphrase.';
-        resultDiv.style.background = '#ffe0e0';
-        return;
-    }
-    
-    resultDiv.style.display = 'block';
-    resultDiv.innerHTML = '⏳ Verifying...';
-    resultDiv.style.background = '#e8f0fe';
-    
-    try {
-        const response = await fetch(`${API_BASE}/verify`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ passphrase: passphrase })
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok && data.status === 'VERIFIED') {
-            resultDiv.innerHTML = '✅ Verification successful. Loading audit dashboard...';
-            resultDiv.style.background = '#e0f5e0';
-            setTimeout(() => {
-                document.getElementById('verificationStep').style.display = 'none';
-                document.getElementById('auditSteps').style.display = 'block';
-            }, 1000);
-        } else {
-            resultDiv.innerHTML = '❌ Access denied. Wrong passphrase.';
-            resultDiv.style.background = '#ffe0e0';
-        }
-    } catch (error) {
-        resultDiv.innerHTML = '❌ Verification service unavailable. Please try again.';
-        resultDiv.style.background = '#ffe0e0';
-    }
-}
