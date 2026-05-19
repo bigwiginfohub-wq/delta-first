@@ -21,11 +21,15 @@ class DeltaFirstV501(BaseModel):
 
     @field_validator('label_impact')
     def validate_label(cls, v):
-        assert v in {"Easier", "Harder", "Neutral"}, "Invalid label_impact enum"
+        if v not in {"Easier", "Harder", "Neutral"}:
+           raise ValueError("Invalid label_impact enum")
         return v
 
     @model_validator(mode='before')
     def clamp_and_clean(cls, data):
+        if not isinstance(data, (dict, str)):
+           raise ValueError("Payload must be a JSON object")
+
         if isinstance(data, str):
             data = re.sub(r'^```json\s*|\s*```$', '', data.strip(), flags=re.MULTILINE)
             data = json.loads(data)
