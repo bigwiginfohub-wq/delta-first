@@ -1,4 +1,4 @@
-🌐 Live Dashboard:  https://vinsta-org.netlify.app/
+🌐 Live Dashboard:  https://vinsta.org
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20009717.svg)](https://doi.org/10.5281/zenodo.20009717)
 Uploaded on: 03-05-2026
 # Delta-First v5.0.1
