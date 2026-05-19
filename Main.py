@@ -1,10 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-import hashlib
+from pydantic import ValidationError
+from validator import DeltaFirstV501
+import time
 
 app = FastAPI()
 
+# CORS (frontend compatibility)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -13,19 +15,54 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mode 3 passphrase hash (DeltaMode3)
-CORRECT_HASH = "6c4be6fabdafd60bd766b15b572d67f26006e52723a58f521900cb47234aed7d"
-
-class VerifyRequest(BaseModel):
-    passphrase: str
+# -----------------------
+# Health Check
+# -----------------------
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 @app.get("/")
 def root():
-    return {"message": "Delta-First Mode 3 API is running"}
+    return {"status": "ok", "service": "delta-first-api"}
 
-@app.post("/verify")
-def verify(request: VerifyRequest):
-    input_hash = hashlib.sha256(request.passphrase.encode()).hexdigest()
-    if input_hash != CORRECT_HASH:
-        raise HTTPException(status_code=401, detail="ACCESS DENIED")
-    return {"status": "VERIFIED", "message": "Access granted"}
+# -----------------------
+# Validate Endpoint
+# -----------------------
+@app.post("/validate")
+def validate(payload: dict):
+    try:
+        data = DeltaFirstV501(**payload)
+
+        # Core rules (your business logic)
+        valid = (
+            data.integrity_score >= 70.0 and
+            data.friction_score <= 0.70 and
+            data.mcl_coefficient >= 0.50 and
+            data.primary_driver in ["H1", "H2", "H3"] and
+            data.boundary.strip() != ""
+        )
+
+        return {
+            "valid": valid,
+            "audit_id": data.audit_id,
+            "primary_driver": data.primary_driver,
+            "mcl_coefficient": data.mcl_coefficient,
+            "friction_score": data.friction_score,
+            "validated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "warnings": [] if valid else ["Threshold conditions not fully met"]
+        }
+
+    except ValidationError as e:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "message": "Invalid payload",
+                "errors": e.errors()
+            }
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail={"message": "Server error", "error": str(e)}
+        )
